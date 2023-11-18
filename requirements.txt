@@ -3,3 +3,7 @@ numpy
 pandas
 pydeck
 streamlit
+plotly
+scipy
+seaborn
+openpyxl
