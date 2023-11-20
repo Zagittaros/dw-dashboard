@@ -67,7 +67,10 @@ def getSenProfile(S, K, T, r, sigma, conv, tick=0.25, d=0., flag='C', PriceRange
 
     UpperBound, LowerBound = [1.1, 0.5]
 
-    colorscale = ['gray' if x > UpperBound else ('red' if x < LowerBound else 'green') for x in np.arange(min_, max_, 0.01)]
+    if flag == 'C':
+        colorscale = ['gray' if x > UpperBound else ('red' if x < LowerBound else 'green') for x in np.arange(min_, max_, 0.01)]
+    else:
+        colorscale = ['gray' if x < -UpperBound else ('red' if x > -LowerBound else 'green') for x in np.arange(min_, max_, 0.01)]
     
     fig = px.imshow(Sim_df, text_auto=False, aspect="auto", color_continuous_scale=colorscale, origin='lower',
                    title='DW Sensitivity Profile')
