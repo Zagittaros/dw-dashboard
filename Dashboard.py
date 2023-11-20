@@ -192,6 +192,7 @@ for i in range(len(TargetStock)):
     )
     
 fig.update_layout(height=500,
+                  width=300,
                   title_text='Value Analysis',
                   hovermode="x unified",
                   barmode='stack',
