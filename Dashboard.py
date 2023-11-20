@@ -186,6 +186,7 @@ for i in range(len(TargetStock)):
         go.Bar(x=plot_df_selection[plot_df_selection.Stock == TargetStock[i]].index,
               y=plot_df_selection[plot_df_selection.Stock == TargetStock[i]]['Value'],
               marker_color=plot_df_selection[plot_df_selection.Stock == TargetStock[i]]['Color'],
+               name='Value',
               showlegend=False),
         row=i+1,col=1
     )
