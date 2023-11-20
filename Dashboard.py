@@ -38,11 +38,12 @@ df['MoM'] = df.groupby('Stock')['RawMoM'].transform(lambda x: (x - x.rolling(win
 AllDate = np.unique(df.index)
 
 with st.sidebar:
-    TargetLookBack = st.number_input("RRG Target (Day)", value=1, min_value=1, max_value=365, placeholder="Type a number...")
-    TailLookBack = st.number_input("RRG Tail (Day)", value=1, min_value=1, max_value=5, placeholder="Type a number...")
-    
-TailDate = np.unique(df.index)[-(TailLookBack + TargetLookBack)]
-TargetDate = np.unique(df.index)[-TargetLookBack]
+    TargetLookBack = st.selectbox("RRG Target Date", options=sorted(AllDate, reverse=True))
+    TailLookBack = st.number_input("RRG Tails (Day)", value=1, min_value=1, max_value=5, placeholder="Type a number...")
+
+TargetIndex = len(AllDate) - np.where(TargetLookBack == AllDate)[0][0]
+TailDate = np.unique(df.index)[-(TailLookBack + TargetIndex)]
+TargetDate = np.unique(df.index)[-TargetIndex]
 
 plot_df = df[df.index >= TailDate].copy()
 
@@ -93,20 +94,22 @@ fig_rrg.update_yaxes(showgrid=True, gridwidth=0.01, gridcolor='#0D2A63')
 
 ## Plot VA Rank ##
 with st.sidebar:
-    TargetDate = st.number_input("Percentage VA Target (Day)", value=1, min_value=1, max_value=365, placeholder="Type a number...")
-    LookBack = st.number_input("Percentage VA Lookback (Day)", value=5, min_value=1, max_value=365, placeholder="Type a number...")
+    TargetLookBack = st.selectbox("Percentage VA Target Date", options=sorted(AllDate, reverse=True))
+    LookBackPeriod = st.number_input("Percentage VA Lookback (Day)", value=5, min_value=1, max_value=365, placeholder="Type a number...")
+
+TargetIndex = len(AllDate) - np.where(TargetLookBack == AllDate)[0][0]
+TargetDate = np.unique(df.index)[-TargetIndex]
 
 plot_df = df.copy()
-AllDate = np.unique(plot_df.index)
-plot_df['LookBackPctVA'] = -plot_df.PctVA.shift(LookBack)
+plot_df['LookBackPctVA'] = -plot_df.PctVA.shift(LookBackPeriod)
 plot_df = plot_df.dropna()
 AvgPctVA = np.percentile(plot_df.PctVA, 85)
 AvgLookBackPctVA = np.percentile(plot_df.LookBackPctVA, 15)
 
-fig_VAcomp = px.bar(plot_df[plot_df.index == AllDate[-(TargetDate)]].sort_values('PctVA', ascending=False), x='Stock', y=['PctVA', 'LookBackPctVA'],
+fig_VAcomp = px.bar(plot_df[plot_df.index == AllDate[-(TargetIndex)]].sort_values('PctVA', ascending=False), x='Stock', y=['PctVA', 'LookBackPctVA'],
               color_discrete_map={'PctVA': 'green',
                                   'LookBackPctVA': 'red'},
-              title=f'Percentage VA As of Date: {AllDate[-TargetDate]}')
+              title=f'Percentage VA As of Date: {AllDate[-TargetIndex]}')
 
 fig_VAcomp.update_layout(xaxis_title='Stock',
                   yaxis_title='Percentage VA',
@@ -136,7 +139,7 @@ st.plotly_chart(fig_VAcomp, use_container_width=True)
 ## Plot VA Heat ##
 with st.sidebar:
     window = st.number_input("Smoothing HeatBar (Day)", value=21, min_value=1, max_value=100, placeholder="Type a number...")
-    LookBack = st.number_input("Percentage VA HeatBar (Day)", value=60, min_value=21, max_value=90, placeholder="Type a number...")
+    LookBack = st.number_input("Lookback HeatBar (Day)", value=60, min_value=21, max_value=90, placeholder="Type a number...")
 
 TargetDate = np.unique(df.index)[-LookBack]
 plot_df = df[df.index >= TargetDate].copy()
@@ -210,6 +213,3 @@ dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d").tolist() if not d in dt_obs]
 fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
 
 st.plotly_chart(fig, use_container_width=True)
-
-
-
