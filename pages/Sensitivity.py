@@ -152,7 +152,7 @@ st.title('DW Simulation')
 
 st.sidebar.header('Input')
 with st.sidebar:
-    DayinYr = st.number_input("Days in a Year", value=250., min_value=250., placeholder="Type a number...")
+    DayinYr = st.number_input("Days in a Year", value=250, min_value=250, placeholder="Type a number...")
     flag = st.selectbox("Call/Put", ('C', 'P'))
     S = st.number_input("Spot", value=70., min_value=1., placeholder="Type a number...")
     K = st.number_input("Strike", value=75.5, min_value=1., placeholder="Type a number...")
