@@ -171,7 +171,7 @@ DWSen = getSen(S, K, T/DayinYr, r, PricingVol, conv, tick, d, flag)
 DWGear = getGearing(S, K, T/DayinYr, r, PricingVol, conv, d, flag)
 DWDelta = getDelta(S, K, T/DayinYr, r, PricingVol, d, flag)
 DWTheta = getTheta(S, K, T/DayinYr, r, PricingVol, 250, d, flag)
-Moneyness = round((S-K)/K * 100) if flag == 'C' else round((K-S)/S * 100)
+Moneyness = round((S-K)/S * 100) if flag == 'C' else round((K-S)/S * 100)
 
 st.write(f'DW Premium: {round(Premium, 2)}')
 st.write(f'TTM (Days): {T}')
